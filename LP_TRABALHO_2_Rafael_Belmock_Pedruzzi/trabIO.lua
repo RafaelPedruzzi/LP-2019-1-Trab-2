@@ -12,10 +12,10 @@ trabIO = {}
 
 -- Função para leitura dos arquivos entrada.txt e distancia.txt
 -- parâmetros: nenhum.
--- retorno: a distância limite e um ponteiro para uma tabela contendo todos os pontos lidos mapeados pela linha em que foram lidos.
+-- retorno: a distância limite e um ponteiro para um vetor contendo vetores que representam cada ponto lido (a posição no vetor indica a linha que foi lido).
 function trabIO.readEntry()
 	local dist = 0    -- dist: distância limite.
-	local points = {} -- points: tabela de pontos.
+	local points = {} -- points: vetor de pontos.
 
 	-- Abrindo arquivo distancia.txt para obter a distância limite.
 	local distFile = io.open("./distancia.txt", "r")
@@ -27,9 +27,10 @@ function trabIO.readEntry()
     dist = distFile:read("*n") -- lendo distância limite.
     distFile:close()
 
+	-- Função auxiliar para converter o formato string da leitura emum vetor de números.
     local function toVector(s)
         local t = {}
-        s:gsub('%-?%S+', function(n) t[#t+1] = tonumber(n) end)
+        s:gsub('%-?%S+', function(n) t[#t+1] = tonumber(n) end) -- selecionando cada valor separado por espaços, convertendo-os para numero e armazenando em t.
         return t
     end
 
@@ -44,14 +45,14 @@ function trabIO.readEntry()
 	for line in entrFile:lines() do
         local p = toVector(line)
 
-		points[#points+1] = p -- mapeando o número da linha como chave do ponto.
+		points[#points+1] = p -- (número da linha é a posição do ponto no vetor)
     end
 
 	return dist, points
 end
 
 -- Funcão para impressão do arquivo saida.txt
--- parâmetros: ponteiro para os grupos a serem impressos
+-- parâmetros: o vetor de grupos.
 -- pós-condição: estruturas inalteradas.
 function trabIO.writeGroups(g)
 	-- Criando arquivo de escrita
